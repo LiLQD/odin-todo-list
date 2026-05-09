@@ -113,6 +113,7 @@ export function buildAddProjectModal() {
 
   append(modal, modalBody, footer);
   document.body.appendChild(overlay);
+  overlay.classList.add("modal-overlay", "open");
 }
 
 
@@ -177,4 +178,10 @@ export function buildAddTodoModal() {
 
   append(modal, modalBody, footer);
   document.body.appendChild(overlay);
+  overlay.classList.add("modal-overlay", "open");
+}
+
+export function closeModal(){
+  const currentModal = document.querySelector(".modal-overlay.open");
+  document.body.removeChild(currentModal);
 }
