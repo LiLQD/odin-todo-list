@@ -84,3 +84,58 @@ function buildMain(){
   document.body.appendChild(main);
 }
 
+export function buildAddProjectModal(){
+    const modalOverlay = document.createElement("div");
+    modalOverlay.classList.add("modal-overlay");
+    modalOverlay.id = "modal-overlay";
+
+    const modalProject = document.createElement("div");
+    modalProject.classList.add("modal modal-sm");
+    modalProject.id = "modal-overlay";
+    
+    const modalHeader = document.createElement("div");
+    modalHeader.classList.add("modal-header");
+
+    const modalTitle = document.createElement("h3");
+    modalTitle.classList.add("modal-title");
+    modalTitle.textContent = "New Project";
+    const closeProject = document.createElement("button");
+    closeProject.classList.add("btn-close");
+    closeProject.id = "btn-close-project";
+    closeProject.textContent = "x";
+
+    const modalBody = document.createElement("div");
+    modalBody.classList.add("modal-body");
+    const field = document.createElement("div");
+    field.classList.add("field");
+    const labelInputProjectName = document.createElement("label");
+    labelInputProjectName.htmlFor = "input-project-name";
+    labelInputProjectName.textContent = "Project Name";
+    const inputProjectName = document.createElement("input");
+    inputProjectName.id = "input-project-name";
+    inputProjectName.type = "text";
+    inputProjectName.placeholder = "e.g. Work, Personal..."
+
+    const modalFooter = document.createElement("div");
+    modalFooter.classList.add("modal-footer");
+    const cancelProjectBtn = document.createElement("button");
+    cancelProjectBtn.classList.add("btn-cancel");
+    cancelProjectBtn.id = "btn-cancel-project"
+    cancelProjectBtn.textContent = "Cancel";
+
+    const submitProjectBtn = document.createElement("button");
+    submitProjectBtn.classList.add("btn-submit");
+    submitProjectBtn.id = "btn-submit-project"
+    submitProjectBtn.textContent = "Create";
+
+    modalHeader.appendChild(modalTitle);
+    modalHeader.appendChild(closeProject);
+    field.appendChild(labelInputProjectName);
+    field.appendChild(inputProjectName);
+    modalBody.appendChild(field);
+    modalProject.appendChild(modalHeader);
+    modalProject.appendChild(modalBody);
+    modalOverlay.appendChild(modalProject);
+    document.appendChild(modalOverlay);
+}
+
