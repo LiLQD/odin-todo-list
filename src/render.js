@@ -1,266 +1,180 @@
+
+function el(tag, { id, classes, text, attrs } = {}) {
+  const node = document.createElement(tag);
+  if (id) node.id = id;
+  if (classes) node.classList.add(...classes);
+  if (text) node.textContent = text;
+  if (attrs) Object.entries(attrs).forEach(([k, v]) => (node[k] = v));
+  return node;
+}
+
+function append(parent, ...children) {
+  children.forEach((child) => parent.appendChild(child));
+  return parent;
+}
+
+function field({ labelFor, labelText, input }) {
+  const wrapper = el("div", { classes: ["field"] });
+  const label = el("label", { text: labelText, attrs: { htmlFor: labelFor } });
+  return append(wrapper, label, input);
+}
+
+function modalShell({ overlayId, modalId, modalClasses, titleText, closeBtnId }) {
+  const overlay = el("div", { id: overlayId, classes: ["modal-overlay"] });
+  const modal = el("div", { id: modalId, classes: modalClasses });
+  const header = el("div", { classes: ["modal-header"] });
+  const title = el("h3", { classes: ["modal-title"], text: titleText });
+  const closeBtn = el("button", { id: closeBtnId, classes: ["btn-close"], text: "x" });
+  append(header, title, closeBtn);
+  append(modal, header);
+  append(overlay, modal);
+  return { overlay, modal, header };
+}
+
+function modalFooterShell({ cancelId, cancelText, submitId, submitText }) {
+  const footer = el("div", { classes: ["modal-footer"] });
+  const cancelBtn = el("button", { id: cancelId, classes: ["btn-cancel"], text: cancelText });
+  const submitBtn = el("button", { id: submitId, classes: ["btn-submit"], text: submitText });
+  return append(footer, cancelBtn, submitBtn);
+}
+
+
 export function buildLayout() {
   buildSidebar();
   buildMain();
 }
 
 function buildSidebar() {
-  const sidebar = document.createElement("aside");
-  sidebar.classList.add("sidebar");
+  const sidebar = el("aside", { classes: ["sidebar"] });
 
-  const sidebarHeader = document.createElement("div");
-  sidebarHeader.classList.add("sidebar-header");
+  const sidebarHeader = el("div", { classes: ["sidebar-header"] });
+  const appTitle = el("h1", { classes: ["app-title"], text: "Do." });
+  const appSub = el("p", { classes: ["app-sub"], text: "stay sharp." });
+  append(sidebarHeader, appTitle, appSub);
 
-  const appTitle = document.createElement("h1");
-  appTitle.classList.add("app-title");
-  appTitle.textContent = "Do.";
-  const appSub = document.createElement("p");
-  appSub.classList.add("app-sub");
-  appSub.textContent = "stay sharp.";
-  sidebarHeader.appendChild(appTitle);
-  sidebarHeader.appendChild(appSub);
+  const sidebarSection = el("div", { classes: ["sidebar-section"] });
+  const sidebarLabel = el("span", { classes: ["sidebar-label"], text: "Projects" });
+  const projectList = el("ul", { id: "project-list" });
+  append(sidebarSection, sidebarLabel, projectList);
 
-  const sidebarSection = document.createElement("div");
-  sidebarSection.classList.add("sidebar-section");
-  const sidebarLabel = document.createElement("span");
-  sidebarLabel.classList.add("sidebar-label");
-  sidebarLabel.textContent = "Projects";
-  const projectList = document.createElement("ul");
-  projectList.id = "project-list";
-  sidebarSection.appendChild(sidebarLabel);
-  sidebarSection.appendChild(projectList);
-
-  const addProject = document.createElement("button");
-  addProject.classList.add("btn-add-project");
-  addProject.id = "btn-add-project";
-  const plus = document.createElement("span");
-  plus.textContent = "+";
+  const addProject = el("button", { id: "btn-add-project", classes: ["btn-add-project"] });
+  const plus = el("span", { text: "+" });
   addProject.textContent = " New Project";
   addProject.appendChild(plus);
 
-  sidebar.appendChild(sidebarHeader);
-  sidebar.appendChild(sidebarSection);
-  sidebar.appendChild(addProject);
+  append(sidebar, sidebarHeader, sidebarSection, addProject);
   document.body.appendChild(sidebar);
 }
 
 function buildMain() {
-  const main = document.createElement("main");
-  main.classList.add("main");
+  const main = el("main", { classes: ["main"] });
 
-  const mainHeader = document.createElement("div");
-  mainHeader.classList.add("main-header");
+  const mainHeader = el("div", { classes: ["main-header"] });
+  const projectTitle = el("h2", { id: "project-title", classes: ["project-title"], text: "Inbox" });
+  const addTodo = el("button", { id: "btn-add-todo", classes: ["btn-add-todo"], text: "+ Add Todo" });
+  append(mainHeader, projectTitle, addTodo);
 
-  const projectTitle = document.createElement("h2");
-  projectTitle.classList.add("project-title");
-  projectTitle.id = "project-title";
-  projectTitle.textContent = "Inbox";
+  const todoList = el("ul", { id: "todo-list" });
 
-  const addTodo = document.createElement("button");
-  addTodo.classList.add("btn-add-todo");
-  addTodo.id = "btn-add-todo";
-  addTodo.textContent = "+ Add Todo";
+  const emptyState = el("div", { id: "empty-state", classes: ["empty-state"] });
+  const emptyText = el("p", { classes: ["empty-text"], text: "Nothing here yet" });
+  const emptySub = el("p", { classes: ["empty-sub"], text: "Add a todo to get started" });
+  append(emptyState, emptyText, emptySub);
 
-  const todoList = document.createElement("ul");
-  todoList.id = "todo-list";
-
-  const emptyState = document.createElement("div");
-  emptyState.classList.add("empty-state");
-  emptyState.id = "empty-state";
-
-  const emptyText = document.createElement("p");
-  emptyText.classList.add("empty-text");
-  emptyText.textContent = "Nothing here yet";
-
-  const emptySub = document.createElement("p");
-  emptySub.classList.add("empty-sub");
-  emptySub.textContent = "Add a todo to get started";
-
-  emptyState.appendChild(emptyText);
-  emptyState.appendChild(emptySub);
-  mainHeader.appendChild(projectTitle);
-  mainHeader.appendChild(addTodo);
-  main.appendChild(mainHeader);
+  append(main, mainHeader);
   false ? main.appendChild(todoList) : main.appendChild(emptyState);
   document.body.appendChild(main);
 }
 
+
 export function buildAddProjectModal() {
-  const modalOverlay = document.createElement("div");
-  modalOverlay.classList.add("modal-overlay");
-  modalOverlay.id = "modal-project-overlay";
+  const { overlay, modal } = modalShell({
+    overlayId: "modal-project-overlay",
+    modalId: "modal-project",
+    modalClasses: ["modal", "modal-sm"],
+    titleText: "New Project",
+    closeBtnId: "btn-close-project",
+  });
 
-  const modalProject = document.createElement("div");
-  modalProject.classList.add("modal modal-sm");
-  modalProject.id = "modal-project";
+  const inputProjectName = el("input", {
+    id: "input-project-name",
+    attrs: { type: "text", placeholder: "e.g. Work, Personal..." },
+  });
 
-  const modalHeader = document.createElement("div");
-  modalHeader.classList.add("modal-header");
+  const modalBody = el("div", { classes: ["modal-body"] });
+  append(modalBody, field({ labelFor: "input-project-name", labelText: "Project Name", input: inputProjectName }));
 
-  const modalTitle = document.createElement("h3");
-  modalTitle.classList.add("modal-title");
-  modalTitle.textContent = "New Project";
-  const closeProject = document.createElement("button");
-  closeProject.classList.add("btn-close");
-  closeProject.id = "btn-close-project";
-  closeProject.textContent = "x";
+  const footer = modalFooterShell({
+    cancelId: "btn-cancel-project",
+    cancelText: "Cancel",
+    submitId: "btn-submit-project",
+    submitText: "Create",
+  });
 
-  const modalBody = document.createElement("div");
-  modalBody.classList.add("modal-body");
-  const field = document.createElement("div");
-  field.classList.add("field");
-  const labelInputProjectName = document.createElement("label");
-  labelInputProjectName.htmlFor = "input-project-name";
-  labelInputProjectName.textContent = "Project Name";
-  const inputProjectName = document.createElement("input");
-  inputProjectName.id = "input-project-name";
-  inputProjectName.type = "text";
-  inputProjectName.placeholder = "e.g. Work, Personal...";
-
-  const modalFooter = document.createElement("div");
-  modalFooter.classList.add("modal-footer");
-  const cancelProjectBtn = document.createElement("button");
-  cancelProjectBtn.classList.add("btn-cancel");
-  cancelProjectBtn.id = "btn-cancel-project";
-  cancelProjectBtn.textContent = "Cancel";
-
-  const submitProjectBtn = document.createElement("button");
-  submitProjectBtn.classList.add("btn-submit");
-  submitProjectBtn.id = "btn-submit-project";
-  submitProjectBtn.textContent = "Create";
-
-  modalHeader.appendChild(modalTitle);
-  modalHeader.appendChild(closeProject);
-  field.appendChild(labelInputProjectName);
-  field.appendChild(inputProjectName);
-  modalBody.appendChild(field);
-  modalProject.appendChild(modalHeader);
-  modalProject.appendChild(modalBody);
-  modalOverlay.appendChild(modalProject);
-  document.body.appendChild(modalOverlay);
+  append(modal, modalBody, footer);
+  document.body.appendChild(overlay);
 }
 
+
 export function buildAddTodoModal() {
-  const modalOverlay = document.createElement("div");
-  modalOverlay.classList.add("modal-overlay");
-  modalOverlay.id = "modal-todo-overlay";
-  const modalTodo = document.createElement("div");
-  modalTodo.classList.add("modal");
-  modalTodo.id = "modal";
+  const { overlay, modal } = modalShell({
+    overlayId: "modal-todo-overlay",
+    modalId: "modal",
+    modalClasses: ["modal"],
+    titleText: "New Todo",
+    closeBtnId: "btn-close-modal",
+  });
 
-  const modalHeader = document.createElement("div");
-  modalHeader.classList.add("modal-header");
-  const modalTitle = document.createElement("h3");
-  modalTitle.classList.add("modal-title");
-  modalTitle.id = "modal-title";
-  modalTitle.textContent = "New Todo";
-  const modalCloseBtn = document.createElement("button");
-  modalCloseBtn.classList.add("btn-close");
-  modalCloseBtn.id = "btn-close-modal";
-  modalCloseBtn.textContent = "x";
+  // Fields
+  const titleInput = el("input", {
+    id: "input-title",
+    attrs: { type: "text", placeholder: "What needs to be done?" },
+  });
 
-  const modalBody = document.createElement("div");
-  modalBody.classList.add("modal-body");
+  const descInput = el("textarea", {
+    id: "input-desc",
+    attrs: { placeholder: "Add some details...", rows: "3" },
+  });
 
-  const titleField = document.createElement("div");
-  titleField.classList.add("field");
-  const titleLabel = document.createElement("label");
-  titleLabel.htmlFor = "input-title";
-  titleLabel.textContent = "Title";
-  const titleInput = document.createElement("input");
-  titleInput.id = "input-title";
-  titleInput.type = "text";
-  titleInput.placeholder = "What needs to be done?";
+  const dateInput = el("input", { id: "input-due", attrs: { type: "date" } });
 
-  const descriptionField = document.createElement("div");
-  descriptionField.classList.add("field");
-  const descriptionLabel = document.createElement("label");
-  descriptionLabel.htmlFor = "input-desc";
-  descriptionLabel.textContent = "Description";
-  const descriptionInput = document.createElement("textarea");
-  descriptionInput.id = "input-desc";
-  descriptionInput.placeholder = "Add some details...";
-  descriptionInput.rows = "3";
-
-  const dateFieldRow = document.createElement("div");
-  dateFieldRow.classList.add("field-row");
-  const dateField = document.createElement("div");
-  dateField.classList.add("field");
-  const dateLabel = document.createElement("label");
-  dateLabel.htmlFor = "input-due";
-  dateLabel.textContent = "Due Date";
-  const dateInput = document.createElement("input");
-  dateInput.id = "input-due";
-  dateInput.type = "date";
-
-  const priorityField = document.createElement("div");
-  priorityField.classList.add("field");
-  const priorityLabel = document.createElement("label");
-  priorityLabel.htmlFor = "input-priority";
-  priorityLabel.textContent = "Priority";
-  const priorityInput = document.createElement("select");
-  priorityInput.id = "input-priority";
+  const priorityInput = el("select", { id: "input-priority" });
   priorityInput.innerHTML = `
-  <option value="low">Low</option>
-  <option value="medium" selected>Medium</option>
-  <option value="high">High</option>
-`;
+    <option value="low">Low</option>
+    <option value="medium" selected>Medium</option>
+    <option value="high">High</option>
+  `;
 
-  const noteField = document.createElement("div");
-  noteField.classList.add("field");
-  const noteLabel = document.createElement("label");
-  noteLabel.htmlFor = "input-notes";
-  noteLabel.textContent = "Notes";
-  const noteInput = document.createElement("textarea");
-  noteInput.id = "input-notes";
-  noteInput.placeholder = "Any extra notes...";
-  noteInput.rows = "2";
+  const noteInput = el("textarea", {
+    id: "input-notes",
+    attrs: { placeholder: "Any extra notes...", rows: "2" },
+  });
 
-  const projectField = document.createElement("div");
-  projectField.classList.add("field");
-  const projectLabel = document.createElement("label");
-  projectLabel.htmlFor = "input-project";
-  projectLabel.textContent = "Project";
-  const projectInput = document.createElement("select");
-  projectInput.id = "input-project";
+  const projectInput = el("select", { id: "input-project" });
 
-  const modalFooter = document.createElement("div");
-  modalFooter.classList.add("modal-footer");
-  const cancelBtn = document.createElement("button");
-  cancelBtn.classList.add("btn-cancel");
-  cancelBtn.id = "btn-cancel";
-  cancelBtn.textContent = "Cancel";
-  const submitBtn = document.createElement("button");
-  submitBtn.classList.add("btn-submit");
-  submitBtn.id = "btn-submit";
-  submitBtn.textContent = "Add Todo";
+  // Date + Priority row
+  const dateFieldRow = el("div", { classes: ["field-row"] });
+  const dateField = field({ labelFor: "input-due", labelText: "Due Date", input: dateInput });
+  const priorityField = field({ labelFor: "input-priority", labelText: "Priority", input: priorityInput });
+  append(dateFieldRow, dateField, priorityField);
 
-  titleField.appendChild(titleLabel);
-  titleField.appendChild(titleInput);
-  descriptionField.appendChild(descriptionLabel);
-  descriptionField.appendChild(descriptionInput);
-  dateField.appendChild(dateLabel);
-  dateField.appendChild(dateInput);
-  dateFieldRow.appendChild(dateField);
-  dateFieldRow.appendChild(priorityField);
-  priorityField.appendChild(priorityLabel);
-  priorityField.appendChild(priorityInput);
-  noteField.appendChild(noteLabel);
-  noteField.appendChild(noteInput);
+  const modalBody = el("div", { classes: ["modal-body"] });
+  append(
+    modalBody,
+    field({ labelFor: "input-title", labelText: "Title", input: titleInput }),
+    field({ labelFor: "input-desc", labelText: "Description", input: descInput }),
+    dateFieldRow,
+    field({ labelFor: "input-notes", labelText: "Notes", input: noteInput }),
+    field({ labelFor: "input-project", labelText: "Project", input: projectInput })
+  );
 
-  modalHeader.appendChild(modalTitle);
-  modalHeader.appendChild(modalCloseBtn);
-  modalBody.appendChild(titleField);
-  modalBody.appendChild(dateFieldRow);
-  modalBody.appendChild(priorityField);
-  modalBody.appendChild(noteField);
-  modalBody.appendChild(projectField);
-  modalFooter.appendChild(cancelBtn);
-  modalFooter.appendChild(submitBtn);
+  const footer = modalFooterShell({
+    cancelId: "btn-cancel",
+    cancelText: "Cancel",
+    submitId: "btn-submit",
+    submitText: "Add Todo",
+  });
 
-  modalTodo.appendChild(modalHeader);
-  modalTodo.appendChild(modalBody);
-  modalTodo.appendChild(modalFooter);
-  modalOverlay.appendChild(modalTodo);
-
-  document.body.appendChild(modalOverlay);
+  append(modal, modalBody, footer);
+  document.body.appendChild(overlay);
 }
