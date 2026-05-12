@@ -1,4 +1,4 @@
-import { isEmptyList } from "./todo.js";
+import { isEmptyList, removeTodo } from "./todo.js";
 function el(tag, { id, classes, text, attrs } = {}) {
   const node = document.createElement(tag);
   if (id) node.id = id;
@@ -120,7 +120,9 @@ function buildMain() {
   append(emptyState, emptyText, emptySub);
 
   append(main, mainHeader);
-  isEmptyList() ? main.appendChild(emptyState) : main.appendChild(todoContainer);
+  isEmptyList()
+    ? main.appendChild(emptyState)
+    : main.appendChild(todoContainer);
   document.body.appendChild(main);
 }
 
@@ -255,22 +257,29 @@ function buildTodo(dataId, title, due, priority) {
     attrs: { type: "checkbox" },
   });
   const info = el("div", { classes: ["todo-info"] });
-  const todoTitle = el("span", {classes: ["todo-title"], text: title});
-  const todoDue = el("span", {classes: ["todo-due"], text: due});
+  const todoTitle = el("span", { classes: ["todo-title"], text: title });
+  const todoDue = el("span", { classes: ["todo-due"], text: due });
   append(info, todoTitle, todoDue);
-  const action = el("div", {classes: ["todo-actions"]});
-  const expandBtn = el("span", {classes: ["btn-expand"], text: "↗"});
-  const deleteBtn = el("span", {classes: ["btn-delete"], text: "✕"});
-  append(action, expandBtn,deleteBtn);
+  const action = el("div", { classes: ["todo-actions"] });
+  const expandBtn = el("span", { classes: ["btn-expand"], text: "↗" });
+  const deleteBtn = el("span", { classes: ["btn-delete"], text: "✕" });
+  append(action, expandBtn, deleteBtn);
   append(todoCard, todoCheck, info, action);
   const todoContainer = document.querySelector("#todo-list");
   todoContainer.appendChild(todoCard);
 }
-export function displayTodoList(todoList){
+export function displayTodoList(todoList) {
   const todoContainer = document.querySelector("#todo-list");
   todoContainer.textContent = "";
-  todoList.forEach(e => {
+  todoList.forEach((e) => {
     buildTodo(e.id, e.title, e.due, e.priority);
   });
-  closeModal();
+  const deleteBtn = document.querySelectorAll(".btn-delete");
+  deleteBtn.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      console.log(btn);
+      const todoCard = btn.parentNode;
+      removeTodo(btn.dataset.id);
+    });
+  });
 }

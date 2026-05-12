@@ -38,4 +38,9 @@ export function createTodo() {
   console.log(todoList);
   displayTodoList(todoList);
 }
-
+export function removeTodo(id){
+    todoList.splice(todoList.indexOf(id), 1);
+    displayTodoList(todoList);
+    console.log(todoList);
+    
+}
