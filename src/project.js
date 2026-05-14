@@ -1,6 +1,7 @@
 import { todoList } from "./todo.js";
+import { displayProjectList } from "./render.js";
 export const projectList = [
-  { id: "bc9e981b-dc37-4ba8-92f9-3b99a442d52a", name: "Defualt", count: 5 },
+  { id: crypto.randomUUID(), name: "Defualt", count: 5 },
 ];
 class Project {
   constructor(id, name, count) {

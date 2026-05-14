@@ -22,7 +22,7 @@ export function createTodo() {
   const priorityInput = "priority-" + document.querySelector("#input-priority").value;
   const priorityText = priorityInput.toLowerCase();
   const notes = document.querySelector("#input-notes").value;
-  const projectInput = document.querySelector("#input-project");
+  const projectInput = document.querySelector("#input-project").value;
   const newTodo = new Todo(
     dataId,
     title,
@@ -51,10 +51,11 @@ export function editTodo(cardId) {
   const priorityInput = "priority-" + document.querySelector("#input-priority").value;
   const priorityText = priorityInput.toLowerCase();
   const notesText = document.querySelector("#input-notes").value;
-  //const projectInput = document.querySelector("#input-project");
+  const projectInput = document.querySelector("#input-project").value;
   cardId.title = titleText;
   cardId.desc = descText;
   cardId.due = dueText;
   cardId.priority = priorityText;
   cardId.notes = notesText;
+  cardId.project = projectInput;
 }

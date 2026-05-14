@@ -57,6 +57,12 @@ function modalFooterShell({ cancelId, cancelText, submitId, submitText }) {
   return append(footer, cancelBtn, submitBtn);
 }
 
+function renderProjectSelect(node){
+  projectList.forEach(e => {
+    const projectItem = el("option", {text: e.name, attrs: {value: e.name}});
+    node.appendChild(projectItem);
+  });
+}
 export function buildLayout() {
   document.body.textContent = "";
   buildSidebar();
@@ -158,7 +164,7 @@ export function buildAddProjectModal(project = null) {
     cancelId: "btn-cancel-project",
     cancelText: "Cancel",
     submitId: "btn-submit-project",
-    submitText: "Create",
+    submitText: isEditMode ? "Save" : "Create",
   });
 
   append(modal, modalBody, footer);
@@ -205,7 +211,7 @@ export function buildAddTodoModal(todo = null) {
   });
 
   const projectInput = el("select", { id: "input-project" });
-
+  renderProjectSelect(projectInput);
   // Date + Priority row
   const dateFieldRow = el("div", { classes: ["field-row"] });
   const dateField = field({
@@ -231,7 +237,7 @@ export function buildAddTodoModal(todo = null) {
     titleInput.value = todo.title;
     descInput.value = todo.desc;
     dateInput.value = todo.due;
-    priorityInput.value = todo.priority;
+    priorityInput.value = todo.priority.replace("priority-", "");
     noteInput.value = todo.notes;
     projectInput.value = todo.project;
   }
@@ -343,9 +349,9 @@ function addCloseBtn(){
     btn.addEventListener("click", closeModal);
   });
 }
-function addSubmitBtn(todo = null){
-  const isTodo = todo !== null;
-  const submitBtn = document.querySelector("#btn-submit");
+function addSubmitBtn(todo = false){
+  const isTodo = todo !== false;
+  const submitBtn = document.querySelector(".btn-submit");
   submitBtn.addEventListener("click", () => {
     isTodo ? createTodo() : createProject();
     closeModal();
