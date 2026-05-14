@@ -19,10 +19,8 @@ export function createTodo() {
   const title = document.querySelector("#input-title").value;
   const desc = document.querySelector("#input-desc").value;
   const due = document.querySelector("#input-due").value;
-  const priorityInput = document.querySelector("#input-priority");
-  const priorityText =
-    "priority-" +
-    priorityInput.options[priorityInput.selectedIndex].text.toLowerCase();
+  const priorityInput = "priority-" + document.querySelector("#input-priority").value;
+  const priorityText = priorityInput.toLowerCase();
   const notes = document.querySelector("#input-notes").value;
   const projectInput = document.querySelector("#input-project");
   const newTodo = new Todo(
@@ -38,9 +36,26 @@ export function createTodo() {
   console.log(todoList);
   displayTodoList(todoList);
 }
-export function removeTodo(id){
-    todoList.splice(todoList.indexOf(id), 1);
-    displayTodoList(todoList);
-    console.log(todoList);
-    
+export function removeTodo(cardId) {
+  todoList.splice(
+    todoList.findIndex((e) => e.id === cardId),
+    1,
+  );
+  displayTodoList(todoList);
+  console.log(todoList);
+}
+export function editTodo(cardId) {
+  const titleText = document.querySelector("#input-title").value;
+  const descText = document.querySelector("#input-desc").value;
+  const dueText = document.querySelector("#input-due").value;
+  const priorityInput = "priority-" + document.querySelector("#input-priority").value;
+  const priorityText = priorityInput.toLowerCase();
+  const notesText = document.querySelector("#input-notes").value;
+  //const projectInput = document.querySelector("#input-project");
+  cardId.title = titleText;
+  cardId.desc = descText;
+  cardId.due = dueText;
+  cardId.priority = priorityText;
+  cardId.notes = notesText;
+
 }

@@ -1,4 +1,5 @@
-import { isEmptyList, removeTodo } from "./todo.js";
+import { isEmptyList, removeTodo, createTodo, editTodo } from "./todo.js";
+import { createProject } from "./project.js";
 function el(tag, { id, classes, text, attrs } = {}) {
   const node = document.createElement(tag);
   if (id) node.id = id;
@@ -126,12 +127,14 @@ function buildMain() {
   document.body.appendChild(main);
 }
 
-export function buildAddProjectModal() {
+export function buildAddProjectModal(project = null) {
+  const isEditMode = project !== null;
+
   const { overlay, modal } = modalShell({
     overlayId: "modal-project-overlay",
     modalId: "modal-project",
     modalClasses: ["modal", "modal-sm"],
-    titleText: "New Project",
+    titleText: isEditMode ? "Edit Project" : "New Project",
     closeBtnId: "btn-close-project",
   });
 
@@ -139,7 +142,6 @@ export function buildAddProjectModal() {
     id: "input-project-name",
     attrs: { type: "text", placeholder: "e.g. Work, Personal..." },
   });
-
   const modalBody = el("div", { classes: ["modal-body"] });
   append(
     modalBody,
@@ -160,14 +162,18 @@ export function buildAddProjectModal() {
   append(modal, modalBody, footer);
   document.body.appendChild(overlay);
   overlay.classList.add("modal-overlay", "open");
+  addCloseBtn();
+  if(!isEditMode) addSubmitBtn();
 }
 
-export function buildAddTodoModal() {
+export function buildAddTodoModal(todo = null) {
+  const isEditMode = todo !== null;
+
   const { overlay, modal } = modalShell({
     overlayId: "modal-todo-overlay",
     modalId: "modal",
     modalClasses: ["modal"],
-    titleText: "New Todo",
+    titleText: isEditMode ? "Edit Todo" : "New Todo",
     closeBtnId: "btn-close-modal",
   });
 
@@ -183,7 +189,7 @@ export function buildAddTodoModal() {
   });
 
   const dateInput = el("input", { id: "input-due", attrs: { type: "date" } });
-
+  console.log(dateInput);
   const priorityInput = el("select", { id: "input-priority" });
   priorityInput.innerHTML = `
     <option value="low">Low</option>
@@ -210,9 +216,24 @@ export function buildAddTodoModal() {
     labelText: "Priority",
     input: priorityInput,
   });
-  append(dateFieldRow, dateField, priorityField);
 
   const modalBody = el("div", { classes: ["modal-body"] });
+
+  const footer = modalFooterShell({
+    cancelId: "btn-cancel",
+    cancelText: "Cancel",
+    submitId: "btn-submit",
+    submitText: isEditMode ? "Save Todo" : "Add Todo",
+  });
+  if (isEditMode) {
+    titleInput.value = todo.title;
+    descInput.value = todo.desc;
+    dateInput.value = todo.due;
+    priorityInput.value = todo.priority;
+    noteInput.value = todo.notes;
+    projectInput.value = todo.project;
+  }
+  append(dateFieldRow, dateField, priorityField);
   append(
     modalBody,
     field({ labelFor: "input-title", labelText: "Title", input: titleInput }),
@@ -229,17 +250,11 @@ export function buildAddTodoModal() {
       input: projectInput,
     }),
   );
-
-  const footer = modalFooterShell({
-    cancelId: "btn-cancel",
-    cancelText: "Cancel",
-    submitId: "btn-submit",
-    submitText: "Add Todo",
-  });
-
   append(modal, modalBody, footer);
   document.body.appendChild(overlay);
   overlay.classList.add("modal-overlay", "open");
+  addCloseBtn();
+  if(!isEditMode) addSubmitBtn(true);
 }
 
 export function closeModal() {
@@ -277,9 +292,40 @@ export function displayTodoList(todoList) {
   const deleteBtn = document.querySelectorAll(".btn-delete");
   deleteBtn.forEach((btn) => {
     btn.addEventListener("click", () => {
-      console.log(btn);
-      const todoCard = btn.parentNode;
-      removeTodo(btn.dataset.id);
+      
+      const todoCard = btn.parentNode.parentNode;
+      console.log(todoCard);
+      removeTodo(todoCard.dataset.id);
     });
+  });
+  const expandBtn = document.querySelectorAll(".btn-expand");
+  expandBtn.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const todo = btn.parentNode.parentNode.dataset.id;
+      const todoIndex = todoList.findIndex(e => e.id === todo);
+      console.log(todoIndex);
+      buildAddTodoModal(todoList[todoIndex]);
+      const saveBtn = document.querySelector("#btn-submit");
+      saveBtn.addEventListener("click", () => {
+        editTodo(todoList[todoIndex])
+        closeModal();
+        displayTodoList(todoList);
+      })
+    });
+  });
+}
+
+function addCloseBtn(){
+  const closeBtn = document.querySelectorAll(".btn-close, .btn-cancel");
+  closeBtn.forEach((btn) => {
+    btn.addEventListener("click", closeModal);
+  });
+}
+function addSubmitBtn(todo = null){
+  const isTodo = todo !== null;
+  const submitBtn = document.querySelector("#btn-submit");
+  submitBtn.addEventListener("click", () => {
+    isTodo ? createTodo() : createProject();
+    closeModal();
   });
 }
