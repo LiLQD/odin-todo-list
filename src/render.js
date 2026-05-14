@@ -1,5 +1,5 @@
-import { isEmptyList, removeTodo, createTodo, editTodo } from "./todo.js";
-import { createProject } from "./project.js";
+import { isEmptyList, removeTodo, createTodo, editTodo, todoList } from "./todo.js";
+import { createProject, projectList } from "./project.js";
 function el(tag, { id, classes, text, attrs } = {}) {
   const node = document.createElement(tag);
   if (id) node.id = id;
@@ -61,6 +61,8 @@ export function buildLayout() {
   document.body.textContent = "";
   buildSidebar();
   buildMain();
+  displayTodoList(todoList);
+  displayProjectList(projectList);
 }
 
 function buildSidebar() {
@@ -312,6 +314,26 @@ export function displayTodoList(todoList) {
         displayTodoList(todoList);
       })
     });
+  });
+}
+
+function buildProject(dataId, name, count){
+  const projectItem = el("li", {classes: ["project-item", "active"]});
+  projectItem.dataset.id = dataId;
+  const projectDot = el("span", {classes: ["project-dot"]});
+  const projectName = el("span", { classes: ["project-name"], text: name});
+  const projectCount = el("span", { classes: ["project-count"], text: count});
+
+  append(projectItem, projectDot, projectName, projectCount);
+  const projectContainer = document.querySelector("#project-list");
+  projectContainer.appendChild(projectItem);
+}
+
+export function displayProjectList(projectList){
+  const projectContainer = document.querySelector("#project-list");
+  projectContainer.textContent = "";
+  projectList.forEach((e) => {
+    buildProject(e.id, e.name, e.count);
   });
 }
 

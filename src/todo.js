@@ -57,5 +57,4 @@ export function editTodo(cardId) {
   cardId.due = dueText;
   cardId.priority = priorityText;
   cardId.notes = notesText;
-
 }
