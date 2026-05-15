@@ -2,6 +2,7 @@ import { todoList } from "./todo.js";
 import { displayProjectList } from "./render.js";
 export const projectList = [
   { id: crypto.randomUUID(), name: "Defualt", count: 5 },
+  { id: crypto.randomUUID(), name: "Template", count: 2 },
 ];
 class Project {
   constructor(id, name, count) {
@@ -18,4 +19,10 @@ export function createProject() {
   projectList.push(newProject);
   console.log(projectList);
   displayProjectList(projectList);
+}
+
+export function findTodoInProject(projectName){
+  const filteredTodo = todoList.filter(e => e.project === projectName);
+  console.log(filteredTodo);
+  return filteredTodo;
 }

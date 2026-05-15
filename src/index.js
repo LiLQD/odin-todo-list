@@ -6,7 +6,10 @@ import {
 } from "./render.js";
 import { createTodo, isEmptyList } from "./todo.js";
 console.log("Test Connection");
-
+export let activeProject = "Defualt";
+export function setActiveProject(name){
+  activeProject = name;
+}
 buildLayout();
 const newProjectBtn = document.querySelector("#btn-add-project");
 newProjectBtn.addEventListener("click", () => {

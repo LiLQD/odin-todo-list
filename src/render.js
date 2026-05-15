@@ -1,5 +1,11 @@
-import { isEmptyList, removeTodo, createTodo, editTodo, todoList } from "./todo.js";
-import { createProject, projectList } from "./project.js";
+import {
+  isEmptyList,
+  removeTodo,
+  createTodo,
+  editTodo,
+  todoList,
+} from "./todo.js";
+import { createProject, findTodoInProject, projectList } from "./project.js";
 function el(tag, { id, classes, text, attrs } = {}) {
   const node = document.createElement(tag);
   if (id) node.id = id;
@@ -57,9 +63,12 @@ function modalFooterShell({ cancelId, cancelText, submitId, submitText }) {
   return append(footer, cancelBtn, submitBtn);
 }
 
-function renderProjectSelect(node){
-  projectList.forEach(e => {
-    const projectItem = el("option", {text: e.name, attrs: {value: e.name}});
+function renderProjectSelect(node) {
+  projectList.forEach((e) => {
+    const projectItem = el("option", {
+      text: e.name,
+      attrs: { value: e.name },
+    });
     node.appendChild(projectItem);
   });
 }
@@ -67,7 +76,7 @@ export function buildLayout() {
   document.body.textContent = "";
   buildSidebar();
   buildMain();
-  displayTodoList(todoList);
+  displayTodoList(findTodoInProject("Defualt"));
   displayProjectList(projectList);
 }
 
@@ -171,7 +180,7 @@ export function buildAddProjectModal(project = null) {
   document.body.appendChild(overlay);
   overlay.classList.add("modal-overlay", "open");
   addCloseBtn();
-  if(!isEditMode) addSubmitBtn();
+  if (!isEditMode) addSubmitBtn();
 }
 
 export function buildAddTodoModal(todo = null) {
@@ -262,7 +271,7 @@ export function buildAddTodoModal(todo = null) {
   document.body.appendChild(overlay);
   overlay.classList.add("modal-overlay", "open");
   addCloseBtn();
-  if(!isEditMode) addSubmitBtn(true);
+  if (!isEditMode) addSubmitBtn(true);
 }
 
 export function closeModal() {
@@ -291,16 +300,15 @@ function buildTodo(dataId, title, due, priority) {
   const todoContainer = document.querySelector("#todo-list");
   todoContainer.appendChild(todoCard);
 }
-export function displayTodoList(todoList) {
+export function displayTodoList(list) {
   const todoContainer = document.querySelector("#todo-list");
   todoContainer.textContent = "";
-  todoList.forEach((e) => {
+  list.forEach((e) => {
     buildTodo(e.id, e.title, e.due, e.priority);
   });
   const deleteBtn = document.querySelectorAll(".btn-delete");
   deleteBtn.forEach((btn) => {
     btn.addEventListener("click", () => {
-      
       const todoCard = btn.parentNode.parentNode;
       console.log(todoCard);
       removeTodo(todoCard.dataset.id);
@@ -310,46 +318,54 @@ export function displayTodoList(todoList) {
   expandBtn.forEach((btn) => {
     btn.addEventListener("click", () => {
       const todo = btn.parentNode.parentNode.dataset.id;
-      const todoIndex = todoList.findIndex(e => e.id === todo);
+      const todoIndex = list.findIndex((e) => e.id === todo);
       console.log(todoIndex);
-      buildAddTodoModal(todoList[todoIndex]);
+      buildAddTodoModal(list[todoIndex]);
       const saveBtn = document.querySelector("#btn-submit");
       saveBtn.addEventListener("click", () => {
-        editTodo(todoList[todoIndex])
+        editTodo(list[todoIndex]);
         closeModal();
-        displayTodoList(todoList);
-      })
+        displayTodoList(findTodoInProject(list[todoIndex].project));
+      });
     });
   });
 }
 
-function buildProject(dataId, name, count){
-  const projectItem = el("li", {classes: ["project-item", "active"]});
+function buildProject(dataId, name, count) {
+  const projectItem = el("li", { classes: ["project-item", "active"] });
   projectItem.dataset.id = dataId;
-  const projectDot = el("span", {classes: ["project-dot"]});
-  const projectName = el("span", { classes: ["project-name"], text: name});
-  const projectCount = el("span", { classes: ["project-count"], text: count});
+  const projectDot = el("span", { classes: ["project-dot"] });
+  const projectName = el("span", { classes: ["project-name"], text: name });
+  const projectCount = el("span", { classes: ["project-count"], text: count });
 
   append(projectItem, projectDot, projectName, projectCount);
   const projectContainer = document.querySelector("#project-list");
   projectContainer.appendChild(projectItem);
 }
 
-export function displayProjectList(projectList){
+export function displayProjectList(list) {
   const projectContainer = document.querySelector("#project-list");
   projectContainer.textContent = "";
-  projectList.forEach((e) => {
+  list.forEach((e) => {
     buildProject(e.id, e.name, e.count);
+  });
+    const items = document.querySelectorAll(".project-item");
+  items.forEach((e) => {
+    e.addEventListener("click", () => {
+      const itemId = e.dataset.id;
+      const itemIndex = projectList.findIndex((item) => item.id === itemId);
+      displayTodoList(findTodoInProject(projectList[itemIndex].name));
+    });
   });
 }
 
-function addCloseBtn(){
+function addCloseBtn() {
   const closeBtn = document.querySelectorAll(".btn-close, .btn-cancel");
   closeBtn.forEach((btn) => {
     btn.addEventListener("click", closeModal);
   });
 }
-function addSubmitBtn(todo = false){
+function addSubmitBtn(todo = false) {
   const isTodo = todo !== false;
   const submitBtn = document.querySelector(".btn-submit");
   submitBtn.addEventListener("click", () => {
@@ -357,3 +373,4 @@ function addSubmitBtn(todo = false){
     closeModal();
   });
 }
+function addProjectButton() {}
