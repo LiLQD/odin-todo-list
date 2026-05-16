@@ -6,9 +6,10 @@ import {
 } from "./render.js";
 import { createTodo, isEmptyList } from "./todo.js";
 console.log("Test Connection");
-export let activeProject = "Default";
+export let activeProject = localStorage.getItem("Active Project")|| "Default";
 export function setActiveProject(name){
   activeProject = name;
+  localStorage.setItem("Active Project", activeProject);
 }
 buildLayout();
 const newProjectBtn = document.querySelector("#btn-add-project");

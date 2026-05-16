@@ -5,8 +5,8 @@ import {
   editTodo,
   todoList,
 } from "./todo.js";
-import { createProject, findTodoInProject, projectList } from "./project.js";
-import { activeProject } from "./index.js";
+import { createProject, findTodoInProject, localProjectList, projectList } from "./project.js";
+import { activeProject, setActiveProject } from "./index.js";
 function el(tag, { id, classes, text, attrs } = {}) {
   const node = document.createElement(tag);
   if (id) node.id = id;
@@ -220,8 +220,8 @@ export function buildAddTodoModal(todo = null) {
     attrs: { placeholder: "Any extra notes...", rows: "2" },
   });
 
-  const projectInput = el("select", { id: "input-project" });
-  renderProjectSelect(projectInput);
+  // const projectInput = el("select", { id: "input-project" });
+  // renderProjectSelect(projectInput);
   // Date + Priority row
   const dateFieldRow = el("div", { classes: ["field-row"] });
   const dateField = field({
@@ -249,7 +249,7 @@ export function buildAddTodoModal(todo = null) {
     dateInput.value = todo.due;
     priorityInput.value = todo.priority.replace("priority-", "");
     noteInput.value = todo.notes;
-    projectInput.value = todo.project;
+    // projectInput.value = todo.project;
   }
   append(dateFieldRow, dateField, priorityField);
   append(
@@ -262,11 +262,11 @@ export function buildAddTodoModal(todo = null) {
     }),
     dateFieldRow,
     field({ labelFor: "input-notes", labelText: "Notes", input: noteInput }),
-    field({
-      labelFor: "input-project",
-      labelText: "Project",
-      input: projectInput,
-    }),
+    // field({
+    //   labelFor: "input-project",
+    //   labelText: "Project",
+    //   input: projectInput,
+    // }),
   );
   append(modal, modalBody, footer);
   document.body.appendChild(overlay);
@@ -333,7 +333,7 @@ export function displayTodoList(list) {
 }
 
 function buildProject(dataId, name, count) {
-  const projectItem = el("li", { classes: ["project-item", "active"] });
+  const projectItem = el("li", { classes: ["project-item", activeProject === name ? "active" : null] });
   projectItem.dataset.id = dataId;
   const projectDot = el("span", { classes: ["project-dot"] });
   const projectName = el("span", { classes: ["project-name"], text: name });
@@ -350,12 +350,15 @@ export function displayProjectList(list) {
   list.forEach((e) => {
     buildProject(e.id, e.name, e.count);
   });
-    const items = document.querySelectorAll(".project-item");
+  const items = document.querySelectorAll(".project-item");
   items.forEach((e) => {
     e.addEventListener("click", () => {
       const itemId = e.dataset.id;
       const itemIndex = projectList.findIndex((item) => item.id === itemId);
       displayTodoList(findTodoInProject(projectList[itemIndex].name));
+      setActiveProject(projectList[itemIndex].name);
+      document.querySelector(".project-item.active").classList.remove("active");
+      e.classList.add("active");
     });
   });
 }

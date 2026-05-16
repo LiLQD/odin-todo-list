@@ -1,25 +1,9 @@
+import { activeProject } from "./index.js";
 import { findTodoInProject, projectList } from "./project.js";
 import { displayTodoList } from "./render.js";
-export const todoList = [
-  {
-    id: crypto.randomUUID(),
-    title: "Template",
-    desc: "Template description",
-    due: "2000-11-11",
-    priority: "priority-medium",
-    notes: "Template notes",
-    project: "Default",
-  },
-  {
-    id: crypto.randomUUID(),
-    title: "Template 2",
-    desc: "Template description",
-    due: "2005-11-11",
-    priority: "priority-high",
-    notes: "Template notes",
-    project: "Template",
-  },
-];
+
+export const todoList = JSON.parse(localStorage.getItem("Todo List"));
+
 class Todo {
   constructor(id, title, desc, due, priority, notes, project) {
     this.id = id;
@@ -43,7 +27,7 @@ export function createTodo() {
     "priority-" + document.querySelector("#input-priority").value;
   const priorityText = priorityInput.toLowerCase();
   const notes = document.querySelector("#input-notes").value;
-  const projectInput = document.querySelector("#input-project").value;
+  const projectInput = activeProject;
   const newTodo = new Todo(
     dataId,
     title,
@@ -54,6 +38,7 @@ export function createTodo() {
     projectInput,
   );
   todoList.push(newTodo);
+  localStorage.setItem("Todo List", JSON.stringify(todoList));
   displayTodoList(findTodoInProject(newTodo.project));
 }
 export function removeTodo(cardId) {
@@ -72,7 +57,7 @@ export function editTodo(cardId) {
     "priority-" + document.querySelector("#input-priority").value;
   const priorityText = priorityInput.toLowerCase();
   const notesText = document.querySelector("#input-notes").value;
-  const projectInput = document.querySelector("#input-project").value;
+  const projectInput = activeProject;
   cardId.title = titleText;
   cardId.desc = descText;
   cardId.due = dueText;
