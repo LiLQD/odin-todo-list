@@ -1,7 +1,7 @@
 import { todoList } from "./todo.js";
 import { displayProjectList } from "./render.js";
 export const projectList = [
-  { id: crypto.randomUUID(), name: "Defualt", count: 5 },
+  { id: crypto.randomUUID(), name: "Default", count: 5 },
   { id: crypto.randomUUID(), name: "Template", count: 2 },
 ];
 class Project {
@@ -14,7 +14,6 @@ class Project {
 export function createProject() {
   const dataId = crypto.randomUUID();
   const name = document.querySelector("#input-project-name").value;
-
   const newProject = new Project(dataId, name, 0);
   projectList.push(newProject);
   console.log(projectList);

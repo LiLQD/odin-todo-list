@@ -1,4 +1,4 @@
-import { projectList } from "./project.js";
+import { findTodoInProject, projectList } from "./project.js";
 import { displayTodoList } from "./render.js";
 export const todoList = [
   {
@@ -7,8 +7,8 @@ export const todoList = [
     desc: "Template description",
     due: "2000-11-11",
     priority: "priority-medium",
-    note: "Template notes",
-    project: "Defualt",
+    notes: "Template notes",
+    project: "Default",
   },
   {
     id: crypto.randomUUID(),
@@ -16,7 +16,7 @@ export const todoList = [
     desc: "Template description",
     due: "2005-11-11",
     priority: "priority-high",
-    note: "Template notes",
+    notes: "Template notes",
     project: "Template",
   },
 ];
@@ -54,8 +54,7 @@ export function createTodo() {
     projectInput,
   );
   todoList.push(newTodo);
-  console.log(todoList);
-  displayTodoList(todoList);
+  displayTodoList(findTodoInProject(newTodo.project));
 }
 export function removeTodo(cardId) {
   todoList.splice(

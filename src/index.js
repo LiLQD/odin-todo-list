@@ -6,7 +6,7 @@ import {
 } from "./render.js";
 import { createTodo, isEmptyList } from "./todo.js";
 console.log("Test Connection");
-export let activeProject = "Defualt";
+export let activeProject = "Default";
 export function setActiveProject(name){
   activeProject = name;
 }

@@ -6,6 +6,7 @@ import {
   todoList,
 } from "./todo.js";
 import { createProject, findTodoInProject, projectList } from "./project.js";
+import { activeProject } from "./index.js";
 function el(tag, { id, classes, text, attrs } = {}) {
   const node = document.createElement(tag);
   if (id) node.id = id;
@@ -76,7 +77,7 @@ export function buildLayout() {
   document.body.textContent = "";
   buildSidebar();
   buildMain();
-  displayTodoList(findTodoInProject("Defualt"));
+  displayTodoList(findTodoInProject(activeProject));
   displayProjectList(projectList);
 }
 
@@ -373,4 +374,3 @@ function addSubmitBtn(todo = false) {
     closeModal();
   });
 }
-function addProjectButton() {}
