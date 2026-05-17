@@ -3,9 +3,8 @@ import {
   removeTodo,
   createTodo,
   editTodo,
-  todoList,
 } from "./todo.js";
-import { createProject, findTodoInProject, localProjectList, projectList } from "./project.js";
+import { createProject, findTodoInProject, projectList } from "./project.js";
 import { activeProject, setActiveProject } from "./state.js";
 function el(tag, { id, classes, text, attrs } = {}) {
   const node = document.createElement(tag);
@@ -64,15 +63,15 @@ function modalFooterShell({ cancelId, cancelText, submitId, submitText }) {
   return append(footer, cancelBtn, submitBtn);
 }
 
-function renderProjectSelect(node) {
-  projectList.forEach((e) => {
-    const projectItem = el("option", {
-      text: e.name,
-      attrs: { value: e.name },
-    });
-    node.appendChild(projectItem);
-  });
-}
+// function renderProjectSelect(node) {
+//   projectList.forEach((e) => {
+//     const projectItem = el("option", {
+//       text: e.name,
+//       attrs: { value: e.name },
+//     });
+//     node.appendChild(projectItem);
+//   });
+// }
 export function buildLayout() {
   document.body.textContent = "";
   buildSidebar();

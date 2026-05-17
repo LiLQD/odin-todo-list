@@ -1,5 +1,5 @@
 import { activeProject } from "./state.js";
-import { findTodoInProject, projectList } from "./project.js";
+import { findTodoInProject } from "./project.js";
 import { displayTodoList } from "./render.js";
 
 export const todoList = JSON.parse(localStorage.getItem("Todo List")) || [{

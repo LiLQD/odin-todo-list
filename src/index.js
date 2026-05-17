@@ -4,10 +4,6 @@ import {
   buildAddProjectModal,
   buildAddTodoModal,
 } from "./render.js";
-import { createTodo, isEmptyList } from "./todo.js";
-import { projectList } from "./project.js";
-
-
 
 console.log("Test Connection");
 
