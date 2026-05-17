@@ -1,8 +1,9 @@
 import { todoList } from "./todo.js";
 import { displayProjectList } from "./render.js";
-import { setActiveProject } from "./index.js";
-export const projectList = JSON.parse(localStorage.getItem("Project List"));
-
+import { setActiveProject } from "./state.js";
+export const projectList = JSON.parse(localStorage.getItem("Project List")) || [
+  { id: crypto.randomUUID(), name: "Default", count: 5 },
+];
 class Project {
   constructor(id, name, count) {
     this.id = id;
@@ -22,7 +23,7 @@ export function createProject() {
 }
 
 export function findTodoInProject(projectName) {
-  const filteredTodo = todoList.filter(e => e.project === projectName);
+  const filteredTodo = todoList.filter((e) => e.project === projectName);
   console.log(filteredTodo);
   return filteredTodo;
 }

@@ -6,7 +6,7 @@ import {
   todoList,
 } from "./todo.js";
 import { createProject, findTodoInProject, localProjectList, projectList } from "./project.js";
-import { activeProject, setActiveProject } from "./index.js";
+import { activeProject, setActiveProject } from "./state.js";
 function el(tag, { id, classes, text, attrs } = {}) {
   const node = document.createElement(tag);
   if (id) node.id = id;

@@ -1,9 +1,16 @@
-import { activeProject } from "./index.js";
+import { activeProject } from "./state.js";
 import { findTodoInProject, projectList } from "./project.js";
 import { displayTodoList } from "./render.js";
 
-export const todoList = JSON.parse(localStorage.getItem("Todo List"));
-
+export const todoList = JSON.parse(localStorage.getItem("Todo List")) || [{
+    id: crypto.randomUUID(),
+    title: "Template",
+    desc: "Template description",
+    due: "2000-11-11",
+    priority: "priority-medium",
+    notes: "Template notes",
+    project: "Defualt",
+  }];
 class Todo {
   constructor(id, title, desc, due, priority, notes, project) {
     this.id = id;

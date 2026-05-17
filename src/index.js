@@ -5,12 +5,12 @@ import {
   buildAddTodoModal,
 } from "./render.js";
 import { createTodo, isEmptyList } from "./todo.js";
+import { projectList } from "./project.js";
+
+
+
 console.log("Test Connection");
-export let activeProject = localStorage.getItem("Active Project")|| "Default";
-export function setActiveProject(name){
-  activeProject = name;
-  localStorage.setItem("Active Project", activeProject);
-}
+
 buildLayout();
 const newProjectBtn = document.querySelector("#btn-add-project");
 newProjectBtn.addEventListener("click", () => {
