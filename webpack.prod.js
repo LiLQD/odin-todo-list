@@ -1,27 +1,8 @@
 // webpack.prod.js
-import path from "node:path";
-import HtmlWebpackPlugin from "html-webpack-plugin";
+import { merge } from 'webpack-merge';
+import common from './webpack.common.js';
 
-export default {
-  mode: "production",
-  entry: "./src/index.js",
-  output: {
-    filename: "main.js",
-    path: path.resolve(import.meta.dirname, "dist"),
-    clean: true,
-  },
-  devtool: "source-map",
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "./src/template.html",
-    }),
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
-      },
-    ],
-  },
-};
+export default merge(common, {
+  mode: 'production',
+  devtool: 'source-map',
+});
