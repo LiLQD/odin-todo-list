@@ -53,7 +53,7 @@ export function removeTodo(cardId) {
     todoList.findIndex((e) => e.id === cardId),
     1,
   );
-  displayTodoList(todoList);
+  displayTodoList(findTodoInProject(activeProject));
   console.log(todoList);
 }
 export function editTodo(cardId) {
