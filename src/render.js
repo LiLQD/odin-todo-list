@@ -6,6 +6,8 @@ import {
 } from "./todo.js";
 import { createProject, findTodoInProject, projectList } from "./project.js";
 import { activeProject, setActiveProject } from "./state.js";
+import { format } from "date-fns";
+
 function el(tag, { id, classes, text, attrs } = {}) {
   const node = document.createElement(tag);
   if (id) node.id = id;
@@ -290,7 +292,10 @@ function buildTodo(dataId, title, due, priority) {
   });
   const info = el("div", { classes: ["todo-info"] });
   const todoTitle = el("span", { classes: ["todo-title"], text: title });
-  const todoDue = el("span", { classes: ["todo-due"], text: due });
+  const todoDue = el("span", { 
+  classes: ["todo-due"], 
+  text: due ? format(new Date(due), "dd/MM/yyyy") : "No due date" 
+});
   append(info, todoTitle, todoDue);
   const action = el("div", { classes: ["todo-actions"] });
   const expandBtn = el("span", { classes: ["btn-expand"], text: "↗" });
