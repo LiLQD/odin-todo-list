@@ -1,8 +1,8 @@
-import { todoList } from "./todo.js";
-import { displayProjectList } from "./render.js";
-import { setActiveProject } from "./state.js";
-export const projectList = JSON.parse(localStorage.getItem("Project List")) || [
-  { id: crypto.randomUUID(), name: "Default", count: 0 },
+import { todoList } from './todo.js';
+import { displayProjectList } from './render.js';
+import { setActiveProject } from './state.js';
+export const projectList = JSON.parse(localStorage.getItem('Project List')) || [
+  { id: crypto.randomUUID(), name: 'Default', count: 0 },
 ];
 class Project {
   constructor(id, name, count) {
@@ -14,10 +14,10 @@ class Project {
 
 export function createProject() {
   const dataId = crypto.randomUUID();
-  const name = document.querySelector("#input-project-name").value;
+  const name = document.querySelector('#input-project-name').value;
   const newProject = new Project(dataId, name, 0);
   projectList.push(newProject);
-  localStorage.setItem("Project List", JSON.stringify(projectList));
+  localStorage.setItem('Project List', JSON.stringify(projectList));
   displayProjectList(projectList);
   setActiveProject(name);
 }
