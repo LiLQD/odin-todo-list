@@ -19,8 +19,6 @@ export function checkForm(input, isTodo = false) {
 function checkProjectDuplicate(input) {
   const exist = projectList.some((e) => e.name === input.value);
   if (exist) {
-    console.log('input: ' + input);
-    console.log(input.value);
     input.setCustomValidity(
       "Your project's name is already exists. Please give it another game"
     );

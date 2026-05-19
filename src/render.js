@@ -1,5 +1,10 @@
 import { isEmptyList, removeTodo, createTodo, editTodo } from './todo.js';
-import { createProject, findTodoInProject, projectList } from './project.js';
+import {
+  createProject,
+  findTodoInProject,
+  projectList,
+  removeProject,
+} from './project.js';
 import { activeProject, setActiveProject } from './state.js';
 import { format } from 'date-fns';
 import { checkForm } from './formValid.js';
@@ -214,7 +219,6 @@ export function buildAddTodoModal(todo = null) {
   });
 
   const dateInput = el('input', { id: 'input-due', attrs: { type: 'date' } });
-  console.log(dateInput);
   const priorityInput = el('select', { id: 'input-priority' });
   priorityInput.innerHTML = `
     <option value="low">Low</option>
@@ -311,18 +315,19 @@ function buildTodo(dataId, title, due, priority) {
   const todoContainer = document.querySelector('#todo-list');
   todoContainer.appendChild(todoCard);
 }
+
 export function displayTodoList(list) {
   const todoContainer = document.querySelector('#todo-list');
   todoContainer.textContent = '';
   list.forEach((e) => {
     buildTodo(e.id, e.title, e.due, e.priority);
   });
-  const deleteBtn = document.querySelectorAll('.btn-delete');
-  deleteBtn.forEach((btn) => {
+  const deleteTodoBtn = document.querySelectorAll('.btn-delete');
+  deleteTodoBtn.forEach((btn) => {
     btn.addEventListener('click', () => {
       const todoCard = btn.parentNode.parentNode;
-      console.log(todoCard);
       removeTodo(todoCard.dataset.id);
+      displayTodoList(findTodoInProject(activeProject));
     });
   });
   const expandBtn = document.querySelectorAll('.btn-expand');
@@ -330,7 +335,6 @@ export function displayTodoList(list) {
     btn.addEventListener('click', () => {
       const todo = btn.parentNode.parentNode.dataset.id;
       const todoIndex = list.findIndex((e) => e.id === todo);
-      console.log(todoIndex);
       buildAddTodoModal(list[todoIndex]);
       const saveBtn = document.querySelector('#btn-submit');
       saveBtn.addEventListener('click', () => {
@@ -342,16 +346,16 @@ export function displayTodoList(list) {
   });
 }
 
-function buildProject(dataId, name, count) {
+function buildProject(dataId, name) {
   const projectItem = el('li', {
     classes: ['project-item', activeProject === name ? 'active' : null],
   });
   projectItem.dataset.id = dataId;
   const projectDot = el('span', { classes: ['project-dot'] });
   const projectName = el('span', { classes: ['project-name'], text: name });
-  const projectCount = el('span', { classes: ['project-count'], text: count });
+  const projectDelete = el('span', { classes: ['project-delete'], text: '✕' });
 
-  append(projectItem, projectDot, projectName, projectCount);
+  append(projectItem, projectDot, projectName, projectDelete);
   const projectContainer = document.querySelector('#project-list');
   projectContainer.appendChild(projectItem);
 }
@@ -369,8 +373,22 @@ export function displayProjectList(list) {
       const itemIndex = projectList.findIndex((item) => item.id === itemId);
       displayTodoList(findTodoInProject(projectList[itemIndex].name));
       setActiveProject(projectList[itemIndex].name);
-      document.querySelector('.project-item.active').classList.remove('active');
+      if (document.querySelector('.project-item.active')) {
+        document
+          .querySelector('.project-item.active')
+          .classList.remove('active');
+      }
       e.classList.add('active');
+    });
+  });
+  const deleteProjectBtn = document.querySelectorAll('.project-delete');
+  deleteProjectBtn.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const projectItem = btn.parentNode;
+      removeProject(projectItem.dataset.id);
+      displayProjectList(projectList);
+      displayTodoList(findTodoInProject(projectList[0].name));
     });
   });
 }

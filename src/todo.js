@@ -10,7 +10,7 @@ export const todoList = JSON.parse(localStorage.getItem('Todo List')) || [
     due: '2000-11-11',
     priority: 'priority-medium',
     notes: 'Template notes',
-    project: 'Defualt',
+    project: 'Default',
   },
 ];
 class Todo {
@@ -55,8 +55,7 @@ export function removeTodo(cardId) {
     todoList.findIndex((e) => e.id === cardId),
     1
   );
-  displayTodoList(findTodoInProject(activeProject));
-  console.log(todoList);
+  localStorage.setItem('Todo List', JSON.stringify(todoList));
 }
 export function editTodo(cardId) {
   const titleText = document.querySelector('#input-title').value;
@@ -73,4 +72,5 @@ export function editTodo(cardId) {
   cardId.priority = priorityText;
   cardId.notes = notesText;
   cardId.project = projectInput;
+  localStorage.setItem('Todo List', JSON.stringify(todoList));
 }
