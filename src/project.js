@@ -25,7 +25,7 @@ export function createProject() {
 export function removeProject(itemId) {
   const projectItem = projectList.find((e) => e.id === itemId);
   const todoToRemove = todoList.filter((e) => e.project === projectItem.name);
-  todoToRemove.forEach((e) => removeTodo(e.id)) 
+  todoToRemove.forEach((e) => removeTodo(e.id));
   projectList.splice(
     projectList.findIndex((e) => e.id === itemId),
     1
